@@ -7,7 +7,7 @@ describe(
     beforeAll(async () => {
       page = await global.__BROWSER__.newPage()
       await page.setViewport({width: 1024, height: 768});
-      await page.goto('https://ekimemo.com/database', {waitUntil: "domcontentloaded"})
+      await page.goto('https://ekimemo.com/database')
     }, timeout)
 
     afterAll(async () => {

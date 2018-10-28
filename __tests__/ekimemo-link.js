@@ -7,7 +7,7 @@ describe(
     beforeAll(async () => {
       page = await global.__BROWSER__.newPage()
       await page.setViewport({width: 1024, height: 768});
-      await page.goto('https://ekimemo.com', {waitUntil: "domcontentloaded"})
+      await page.goto('https://ekimemo.com')
     }, timeout)
 
     afterAll(async () => {
@@ -19,15 +19,13 @@ describe(
       expect(pageTitle).toMatch('駅メモ！ - ステーションメモリーズ！- 公式サイト')
     })
     it('should move to is-game', async () => {
-      await page.waitForSelector(".tappable-sub-navigation-label.is-game")
-     await page.hover('.tappable-sub-navigation-label.is-game')
-     await page.waitFor(3000)
-     await page.waitForSelector(".tappable-sub-navigation-label.is-game.is-active")
-     await page.waitFor(3000)
-
-     await page.hover('.tappable-sub-navigation-label.is-special')
-     await page.waitFor(3000)
-     //expect("hoge").toMatch('駅メモ！ - ステーションメモリーズ！- 公式サイト')
+      await page.waitForSelector('.tappable-sub-navigation-label.is-game')
+      await page.focus('.tappable-sub-navigation-label.is-game')
+      await page.hover('.tappable-sub-navigation-label.is-game')
+      //await page.waitForSelector('.tappable-sub-navigation-label.is-game.hover')
+      await page.focus('.navigation-anchor.is-about')
+      await page.hover('.navigation-anchor.is-about')
+      await page.click('.navigation-anchor.is-about')
     })
   },
   timeout
