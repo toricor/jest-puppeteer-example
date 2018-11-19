@@ -1,4 +1,4 @@
-const timeout = 10000
+const timeout = 15000
 
 describe(
   '/ (Home Page)',
@@ -8,6 +8,14 @@ describe(
       page = await global.__BROWSER__.newPage()
       await page.setViewport({width: 1024, height: 768});
       await page.goto('https://ekimemo.com/database')
+
+      page.clear = async (selector)=>{
+        let elem = await page.$(selector);
+        await elem.click();
+        await elem.focus();
+        await elem.click({clickCount: 3});
+        await elem.press('Backspace');
+      };
     }, timeout)
 
     afterAll(async () => {
@@ -30,14 +38,34 @@ describe(
         expect(text).toContain('都営浅草線')
         expect(text).toContain('東京都')
         await page.screenshot({path: "database-gotanda.png"});
-        await page.click('.activity-best-matched-station--result a.activity-station-article-layout')
-        await page.waitFor('.station-name-panel--station-activity')
-        await page.screenshot({path: "database-gotanda-detail.png"});
+        //await page.click('.activity-best-matched-station--result a.activity-station-article-layout')
+        //await page.waitFor('.station-name-panel--station-activity')
+        //await page.screenshot({path: "database-gotanda-detail.png"});
 
-        await page.click('a.activity-anchor.tab-btn.hover')
-        await page.screenshot({path: "database-gotanda-detail-area.png"});
+        ////await page.click('a.activity-anchor.tab-btn.hover')
+        //await page.screenshot({path: "database-gotanda-detail-area.png"});
     })
+    it('新青森という駅名で正しく検索できる', async () => {
+      const stationName = '新青森';
+      await page.clear('.text-input');
+      await page.type('.text-input', stationName);
+      await page.click('.search-btn');
+      await page.waitFor('.activity-best-matched-station--result');
+
+      let text = await page.evaluate(() => document.body.textContent)
+      expect(text).toContain('東北新幹線')
+      await page.screenshot({path: "database-shinaomori.png"});
+　  })
     it('午後単打という駅名では一致する検索結果がない', async () => {
+    const stationName = '午後単打';
+    await page.clear('.text-input');
+    await page.type('.text-input', stationName);
+    await page.click('.search-btn');
+    await page.waitFor('.activity-best-matched-station--result');
+
+    let text = await page.evaluate(() => document.body.textContent)
+    console.log(document.body)
+    await expect(text).toMatch('')
 
     })
   },
